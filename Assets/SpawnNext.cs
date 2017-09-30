@@ -20,10 +20,10 @@ public class SpawnNext : MonoBehaviour {
 		if (other.tag == "Player") {
 			int rand = Random.Range (0, Levels.Length);
 
-
 			float thisHeight = gameObject.GetComponentInParent<SpriteRenderer> ().bounds.size.y/2;
 			float otherHeight = Levels [rand].GetComponent<SpriteRenderer> ().bounds.size.y / 2;
 			GameObject newObj = (GameObject)Instantiate (Levels [rand], transform.parent.transform.position + new Vector3 (0, thisHeight + otherHeight, 0), Quaternion.identity);
+			Destroy (gameObject);
 		}
 	}
 }
