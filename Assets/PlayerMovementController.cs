@@ -3,28 +3,66 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovementController : MonoBehaviour {
-
-	private int hp;
-
-	private Vector3 targetPos;
+	public float movespeed;
+	public float jumpspeed;
+	public Rigidbody2D rb;
+	public static bool isGrounded = false;
+	public static bool LeftCheck = false;
+	public static bool RightCheck = false;
 
 	// Use this for initialization
 	void Start () {
-		hp = 10;
-
-		targetPos = transform.position;
+		rb = GetComponent<Rigidbody2D>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
 
-		if (Input.GetMouseButtonDown (0)) {
-			targetPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+	void FixedUpdate() {
+		int horizontal = 0;
+		int vertical = 0;
+
+		if (Input.GetKey(KeyCode.A))
+		{
+			horizontal--;
+		}
+		if (Input.GetKey(KeyCode.D))
+		{
+			horizontal++;
+		}
+		rb.velocity = new Vector3(horizontal * movespeed, rb.velocity.y, 0);
+
+//		if (Input.GetKeyUp(KeyCode.A)) {
+//			LeftCheck = false;
+//		}
+//		if (Input.GetKeyUp(KeyCode.D)) {
+//			RightCheck = false;
+//		}
+
+//		if (Input.GetKeyDown(KeyCode.Space) && (isGrounded) && !LeftCheck && !RightCheck)
+		if (Input.GetKeyDown(KeyCode.Space) && (isGrounded))
+		{
+			vertical++;
+			rb.velocity = new Vector3(rb.velocity.x, vertical * jumpspeed, 0);
+			isGrounded = false;
 		}
 
-		Vector3 pos = transform.position;
-		transform.position = Vector3.Lerp (pos, targetPos, 1.0f * Time.deltaTime);
-		transform.position = new Vector3 (transform.position.x, transform.position.y, 0);
+		if (LeftCheck && Input.GetKey(KeyCode.A))
+		{
+			rb.velocity = new Vector3(rb.velocity.x, -0.6f, 0);
+			if (Input.GetKeyDown(KeyCode.Space))
+			{
+				rb.velocity = new Vector3(3, jumpspeed, 0);
+				LeftCheck = false;
+			}
+		}
+		if (RightCheck && Input.GetKey(KeyCode.D))
+		{
+			rb.velocity = new Vector3(rb.velocity.x, -0.6f, 0);
+			if (Input.GetKeyDown(KeyCode.Space))
+			{
+				rb.velocity = new Vector3(-3, jumpspeed, 0);
+				RightCheck = false;
+			}
+		}
 
+		Camera.main.transform.position = transform.position + new Vector3(0, 0, -10);
 	}
 }
